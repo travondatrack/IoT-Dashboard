@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Server API configuration
   const apiConfig = {
-    baseUrl: "https://iot-dashboard-1-qzoi.onrender.com", // Your Node.js server address
+    baseUrl: "https://iot-dashboard-pb3k.onrender.com", // Your Node.js server address
     endpoints: {
       containers: "/containers",
       query: "/query",
