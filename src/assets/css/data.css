@@ -1,0 +1,236 @@
+/* Cosmos DB Styling */
+.cosmos-db-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+/* Connection Status */
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.connection-status span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: #f3f4f6;
+}
+
+.connection-status span.connected {
+  color: #22c55e;
+  background-color: rgba(34, 197, 94, 0.1);
+}
+
+.connection-status span.error {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.connection-status span.connecting {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Operations Area */
+.cosmos-operations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .cosmos-operations {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Query Container */
+.cosmos-query-container, .cosmos-results {
+  background-color: #f9fafb;
+  border-radius: 6px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.cosmos-query-container h3, .cosmos-results h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cosmos-query-container h3:before {
+  content: "\f1c0";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #3b82f6;
+}
+
+.cosmos-results h3:before {
+  content: "\f201";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  color: #3b82f6;
+}
+
+/* Select and Textarea */
+#cosmosContainerSelect, #cosmosQueryInput {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#cosmosContainerSelect:focus, #cosmosQueryInput:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+#cosmosQueryInput {
+  height: 120px;
+  font-family: 'Courier New', monospace;
+  resize: vertical;
+}
+
+/* Buttons */
+.primary-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.primary-btn:hover {
+  background-color: #2563eb;
+}
+
+.primary-btn:active {
+  background-color: #1d4ed8;
+}
+
+/* Query Results */
+.query-results {
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+/* Empty, Loading, and Error States */
+.empty-results, .loading-results, .query-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  color: #6b7280;
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-results i, .loading-results i, .query-error i {
+  font-size: 36px;
+  margin-bottom: 15px;
+  opacity: 0.7;
+}
+
+.loading-results i {
+  color: #3b82f6;
+}
+
+.query-error {
+  color: #ef4444;
+}
+
+.query-error i {
+  color: #ef4444;
+}
+
+/* Results JSON */
+.results-count {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-bottom: 10px;
+  padding: 4px 8px;
+  background-color: #f3f4f6;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.results-json {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  background-color: #f8fafc;
+  padding: 15px;
+  border-radius: 4px;
+  overflow: auto;
+  border: 1px solid #e5e7eb;
+  white-space: pre-wrap;
+}
+
+/* Scrollbar styling */
+.query-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.query-results::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.query-results::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.query-results::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Add some animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cosmos-operations {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.loading-results i {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

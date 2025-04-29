@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IoT Dashboard - Login</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="src/assets/css/style.css"/>
+    <link rel="stylesheet" href="src/assets/css/login.css" />
+  </head>
+  <body class="login-body">
+    <!-- Background particles -->
+    <div id="particles-js"></div>
+
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-logo">
+          <i class="fas fa-microchip"></i>
+          <h1>IoT Dashboard</h1>
+        </div>
+        <h2>Đăng nhập</h2>
+        <form id="loginForm">
+          <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input
+              type="text"
+              id="username"
+              placeholder="Tên đăng nhập"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input
+              type="password"
+              id="password"
+              placeholder="Mật khẩu"
+              required
+            />
+          </div>
+          <div class="remember-forgot">
+            <label>
+              <input type="checkbox" id="remember" />
+              <span>Ghi nhớ đăng nhập</span>
+            </label>
+            <a href="#" class="forgot-password">Quên mật khẩu?</a>
+          </div>
+          <div id="loginError" class="error-message"></div>
+          <button type="submit" class="login-btn">Đăng nhập</button>
+        </form>
+
+        <!-- Support links -->
+        <div class="support-links">
+            <a
+              href="https://web.facebook.com/thanh.1804.o"
+              target="_blank"
+              class="support-link"
+            >
+              <i class="fab fa-facebook"></i> Facebook
+            </a>
+            <a href="mailto:PASSTEAM@gmail.com" target="_blank" class="support-link">
+              <i class="fas fa-envelope"></i> Email
+            </a>
+            <a
+              href="https://github.com/ppk205/IoT"
+              target="_blank"
+              class="support-link"
+            >
+              <i class="fab fa-github"></i> GitHub
+            </a>
+          </div>
+          
+
+    <!-- Thêm particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="src/assets/js/script.js"></script>
+  </body>
+</html>

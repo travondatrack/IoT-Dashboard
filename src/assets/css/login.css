@@ -1,0 +1,470 @@
+:root {
+  --current-primary: #4361ee;
+  --current-secondary: #3a0ca3;
+  --current-overlay: rgba(67, 97, 238, 0.7);
+  --current-button-hover: #3a0ca3;
+}
+
+.login-body {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  background-color: #f5f7fb;
+}
+
+/* Background Image */
+.bg-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("https://png.pngtree.com/background/20230519/original/pngtree-traffic-light-turning-red-picture-image_2655138.jpg");
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 20px;
+  animation: fadeIn 0.8s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.login-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+/* Login card structure and spacing */
+.login-header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.login-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+  color: var(--current-primary);
+  transition: color 0.3s ease;
+}
+
+.login-logo i {
+  font-size: 48px;
+  margin-bottom: 10px;
+  animation: pulse 2s infinite;
+}
+
+.login-logo h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.welcome-text {
+  color: #555;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.login-content {
+  margin-bottom: 30px;
+}
+
+.login-content h2 {
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.login-card h2 {
+  text-align: center;
+  font-size: 22px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-group i {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #aaa;
+  transition: color 0.3s;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 15px 15px 15px 45px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.input-group input:focus {
+  border-color: var(--current-primary);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  outline: none;
+}
+
+.input-group input:focus + i {
+  color: var(--current-primary);
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.remember-forgot label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.remember-forgot input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.remember-forgot input[type="checkbox"]:checked {
+  background-color: var(--current-primary);
+  border-color: var(--current-primary);
+}
+
+.remember-forgot input[type="checkbox"]:checked:after {
+  content: "\f00c";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 10px;
+}
+
+.forgot-password {
+  color: var(--current-primary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 14px;
+  margin-bottom: 15px;
+  text-align: center;
+  min-height: 20px;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: var(--current-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn:hover {
+  background-color: var(--current-secondary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.login-btn:after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+.login-btn:hover:after {
+  opacity: 1;
+}
+
+/* Theme Switcher */
+.theme-switcher {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  padding: 10px 15px;
+  border-radius: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.theme-label {
+  color: white;
+  margin-right: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.theme-options {
+  display: flex;
+  gap: 8px;
+}
+
+.theme-option {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+}
+
+.theme-option.active {
+  transform: scale(1.2);
+  border-color: white;
+}
+
+.theme-blue {
+  background: #4361ee;
+}
+
+.theme-purple {
+  background: #8338ec;
+}
+
+.theme-green {
+  background: #06d6a0;
+}
+
+.theme-dark {
+  background: #2b2d42;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.shake {
+  animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+/* Hiệu ứng khi nhấp vào nút */
+.btn-ripple {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  pointer-events: none;
+  transform: scale(0);
+  animation: ripple-effect 0.6s linear;
+}
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Improved support links - cân đối hơn */
+.support-links {
+  display: flex;
+  justify-content: center; /* Thay đổi từ space-evenly thành center để cân đối hơn */
+  flex-wrap: wrap;
+  margin-top: 30px;
+  padding: 15px 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  gap: 20px; /* Tăng khoảng cách giữa các liên kết */
+  font-size: 14px;
+  border-radius: 0 0 8px 8px;
+  background-color: rgba(249, 250, 251, 0.5);
+}
+
+.support-link {
+  flex: 0 1 auto; /* Thay đổi để các liên kết có kích thước tự nhiên */
+  min-width: 100px;
+  color: var(--current-primary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 15px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.support-link:hover {
+  color: var(--current-secondary);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+
+.support-link:active {
+  transform: translateY(0);
+}
+
+.support-link i {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.support-link:hover i {
+  transform: scale(1.2);
+}
+
+/* Responsive adjustments for support links */
+@media (max-width: 480px) {
+  .support-links {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .support-link {
+    max-width: none;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Language selector */
+.language-selector {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+
+.lang-btn {
+  background: rgba(255, 255, 255, 0.7);
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lang-btn.active {
+  background: var(--current-primary);
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-height: 700px) {
+  .login-card {
+    padding: 25px;
+  }
+
+  .login-logo i {
+    font-size: 36px;
+    margin-bottom: 5px;
+  }
+
+  .login-logo h1 {
+    font-size: 20px;
+  }
+
+  .input-group {
+    margin-bottom: 15px;
+  }
+
+  .input-group input {
+    padding: 12px 12px 12px 40px;
+  }
+}
