@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Replace this with a more secure approach
   const openRouterApiKey =
-    "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";
+    "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";
 
   // Kết nối với chatbot server
   const chatbotServerUrl = "http://localhost:3000/api";
