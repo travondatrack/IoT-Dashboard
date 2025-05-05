@@ -921,6 +921,82 @@ video {
   opacity: 0.5;
 }
 
+/* Azure Image Display Styles */
+.dashboard-content {
+  margin-top: 2rem;
+  animation: fadeIn 0.7s ease forwards;
+}
+
+.azure-image-container {
+  background-color: var(--card-bg);
+  border-radius: var(--card-radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.image-display {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.azure-image {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.azure-image:hover {
+  transform: scale(1.02);
+}
+
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: #666;
+}
+
+.loading-indicator i {
+  font-size: 2rem;
+  color: var(--primary);
+}
+
+.error-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  color: var(--status-offline-color);
+}
+
+.error-display i {
+  font-size: 2rem;
+}
+
+.image-info {
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 8px;
+}
+
+.image-info p {
+  margin-bottom: 0.5rem;
+}
+
 /* ====== 11. Animations & Effects ====== */
 @keyframes fadeIn {
   from {
@@ -1060,6 +1136,14 @@ video {
 
   .connect-btn {
     width: 100%;
+  }
+
+  .azure-image-container {
+    padding: 1rem;
+  }
+
+  .image-display {
+    min-height: 200px;
   }
 }
 

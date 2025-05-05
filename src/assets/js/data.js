@@ -94,9 +94,27 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
+        // Sort results by timestamp if available
+        const sortedResults = Array.isArray(results)
+          ? results.sort((a, b) => {
+              // Check for timestamp fields and sort in descending order (newest first)
+              const aTime =
+                a.timestamp || a._ts || a.createdAt || a.updatedAt || 0;
+              const bTime =
+                b.timestamp || b._ts || b.createdAt || b.updatedAt || 0;
+              return new Date(bTime) - new Date(aTime);
+            })
+          : results;
+
         queryResults.innerHTML = `
-          <div class="results-count">${results.length} results found</div>
-          <pre class="results-json">${JSON.stringify(results, null, 2)}</pre>
+          <div class="results-count">${
+            Array.isArray(sortedResults) ? sortedResults.length : 1
+          } results found</div>
+          <pre class="results-json">${JSON.stringify(
+            sortedResults,
+            null,
+            2
+          )}</pre>
         `;
       }
     }
@@ -256,15 +274,109 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
           `;
         } else {
+          // Sort the results by timestamp if available
+          const sortedResults = resources.sort((a, b) => {
+            // Check for common timestamp fields and sort in descending order (newest first)
+            const aTime =
+              a.timestamp || a._ts || a.createdAt || a.updatedAt || 0;
+            const bTime =
+              b.timestamp || b._ts || b.createdAt || b.updatedAt || 0;
+            return new Date(bTime) - new Date(aTime);
+          });
+
           // Create a formatted results display
           queryResults.innerHTML = `
-            <div class="results-count">${resources.length} results found</div>
+            <div class="results-count">${
+              sortedResults.length
+            } results found</div>
             <pre class="results-json">${JSON.stringify(
-              resources,
+              sortedResults,
               null,
               2
             )}</pre>
           `;
+        }
+
+        // Add a query history display button and section
+        const historySection = document.createElement("div");
+        historySection.className = "query-history-section";
+        historySection.innerHTML = `
+          <div class="history-header">
+            <h4>Query History</h4>
+            <button id="toggleQueryHistory" class="secondary-btn">
+              <i class="fas fa-history"></i> Show History
+            </button>
+          </div>
+          <div id="queryHistoryList" class="query-history-list" style="display: none;"></div>
+        `;
+
+        // Add the history section after query results
+        queryResults.parentNode.insertBefore(
+          historySection,
+          queryResults.nextSibling
+        );
+
+        // Toggle history display
+        document
+          .getElementById("toggleQueryHistory")
+          .addEventListener("click", function () {
+            const historyList = document.getElementById("queryHistoryList");
+            const isHidden = historyList.style.display === "none";
+
+            this.innerHTML = isHidden
+              ? '<i class="fas fa-times"></i> Hide History'
+              : '<i class="fas fa-history"></i> Show History';
+
+            historyList.style.display = isHidden ? "block" : "none";
+
+            if (isHidden) {
+              displayQueryHistory();
+            }
+          });
+
+        // Function to display query history
+        function displayQueryHistory() {
+          const historyList = document.getElementById("queryHistoryList");
+          const queryHistory = loadState("queryHistory") || [];
+
+          if (queryHistory.length === 0) {
+            historyList.innerHTML = `<p class="empty-history">No query history available</p>`;
+            return;
+          }
+
+          // Sort history by timestamp (newest first)
+          const sortedHistory = queryHistory.sort(
+            (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
+          );
+
+          let historyHTML = "";
+          sortedHistory.forEach((item, index) => {
+            const date = new Date(item.timestamp).toLocaleString();
+            historyHTML += `
+              <div class="history-item">
+                <div class="history-item-header">
+                  <span class="history-date">${date}</span>
+                  <span class="history-container">${item.container}</span>
+                </div>
+                <div class="history-query">${item.query}</div>
+                <button class="rerun-query" data-index="${index}">Run Again</button>
+              </div>
+            `;
+          });
+
+          historyList.innerHTML = historyHTML;
+
+          // Add event listeners for re-running queries
+          historyList.querySelectorAll(".rerun-query").forEach((button) => {
+            button.addEventListener("click", function () {
+              const index = this.getAttribute("data-index");
+              const queryData = sortedHistory[index];
+
+              cosmosContainerSelect.value = queryData.container;
+              cosmosQueryInput.value = queryData.query;
+              executeQueryBtn.click();
+            });
+          });
         }
       } catch (error) {
         console.error("Query execution error:", error);

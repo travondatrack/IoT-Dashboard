@@ -42,14 +42,6 @@
             <i class="fas fa-chart-line"></i>
             <span>Thống kê</span>
           </a>
-          <a href="devices.html" class="nav-item">
-            <i class="fas fa-cogs"></i>
-            <span>Thiết bị</span>
-          </a>
-          <a href="notifications.html" class="nav-item">
-            <i class="fas fa-bell"></i>
-            <span>Thông báo</span>
-          </a>
           <a href="settings.html" class="nav-item">
             <i class="fas fa-user-cog"></i>
             <span>Cài đặt</span>
@@ -109,36 +101,95 @@
                 <p>Chưa có dữ liệu. Hãy thực hiện truy vấn ở trang Dữ liệu.</p>
               </div>
             </div>
+            
             <div class="data-visualization">
               <div id="dataTable" class="data-table-container"></div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="chatbot-widget">
-      <div id="chatbot-container" class="chatbot-container hidden">
-        <div class="chat-header">
-          <div class="chat-title">
-            <i class="fas fa-robot"></i>
-            <span>IoT Assistant</span>
-          </div>
-          <div class="chat-close" id="chat-close">
-            <i class="fas fa-times"></i>
+        <!-- Air Quality Monitoring Section -->
+        <div class="air-quality-section">
+          <div class="widget-title">Giám sát chất lượng không khí</div>
+          <div class="air-quality-content">
+            <!-- Air Quality Alert -->
+            <div id="airQualityAlert" class="air-quality-alert hidden">
+              <i class="fas fa-exclamation-triangle"></i>
+              <span>Cảnh báo: Chất lượng không khí kém!</span>
+              <p id="airQualityMessage">Giá trị AQI vượt ngưỡng cho phép.</p>
+            </div>
+            
+            <!-- Air Quality Chart -->
+            <div class="chart-container">
+              <div class="widget-subtitle">Biểu đồ chất lượng không khí theo thời gian</div>
+              
+              <!-- Add date range selectors -->
+              <div class="air-quality-date-filter">
+                <div class="filter-group">
+                  <label for="airQualityStartDate">Từ ngày:</label>
+                  <input type="date" id="airQualityStartDate" class="date-picker">
+                </div>
+                <div class="filter-group">
+                  <label for="airQualityEndDate">Đến ngày:</label>
+                  <input type="date" id="airQualityEndDate" class="date-picker">
+                </div>
+                <button id="applyAirQualityDateBtn" class="filter-btn">
+                  <i class="fas fa-filter"></i> Áp dụng
+                </button>
+              </div>
+              
+              <!-- AQI Legend -->
+              <div class="aqi-legend">
+                <div class="aqi-legend-item">
+                  <span class="aqi-legend-color aqi-good"></span>
+                  <span>Tốt (0-50)</span>
+                </div>
+                <div class="aqi-legend-item">
+                  <span class="aqi-legend-color aqi-moderate"></span>
+                  <span>Trung bình (51-100)</span>
+                </div>
+                <div class="aqi-legend-item">
+                  <span class="aqi-legend-color aqi-unhealthy"></span>
+                  <span>Không tốt (101-150)</span>
+                </div>
+                <div class="aqi-legend-item">
+                  <span class="aqi-legend-color aqi-hazardous"></span>
+                  <span>Nguy hiểm (>150)</span>
+                </div>
+              </div>
+              
+              <canvas id="airQualityChart"></canvas>
+            </div>
           </div>
         </div>
-        <div class="chat-messages" id="chat-messages"></div>
-        <div class="chat-input">
-          <input type="text" id="user-input" placeholder="Nhập tin nhắn..." />
-          <button id="send-button"><i class="fas fa-paper-plane"></i></button>
-        </div>
-      </div>
-      <div class="chat-toggle" id="chat-toggle">
-        <i class="fas fa-comments"></i>
-      </div>
-    </div>
 
+        <!-- Environmental Reports Section -->
+        <div class="environmental-reports-section">
+          <div class="widget-title">Báo cáo môi trường</div>
+          <div class="report-filters">
+            <div class="filter-group">
+              <label for="reportType">Loại báo cáo:</label>
+              <select id="reportType" class="report-selector">
+                <option value="shift">Theo ca</option>
+                <option value="daily" selected>Theo ngày</option>
+                <option value="weekly">Theo tuần</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="reportDateRange">Phạm vi thời gian:</label>
+              <input type="date" id="reportStartDate" class="date-picker">
+              <span>đến</span>
+              <input type="date" id="reportEndDate" class="date-picker">
+            </div>
+            <button id="generateReportBtn" class="report-btn">
+              <i class="fas fa-file-alt"></i> Tạo báo cáo
+            </button>
+          </div>
+          <div id="reportContainer" class="report-container">
+            <div id="reportSummary" class="report-summary"></div>
+            <div id="reportCharts" class="report-charts"></div>
+          </div>
+        </div>
 
     <!-- Scripts -->
     <link rel="stylesheet" href="../assets/css/chatbot.css" />

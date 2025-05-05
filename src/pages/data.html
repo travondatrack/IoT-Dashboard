@@ -1,126 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dữ liệu</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../assets/css/style.css" />
-    <link rel="stylesheet" href="../assets/css/data.css" />
-    <!-- Add Azure Cosmos DB SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@azure/cosmos@3.17.3/dist/index.min.js"></script>
-  </head>
-  <body>
-    <!-- Background particles -->
-    <div id="particles-js"></div>
-    <div class="container">
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <div class="logo">
-          <i class="fas fa-microchip"></i>
-          <span>IoT Dashboard</span>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dữ liệu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/data.css">
+  <!-- Add Azure Cosmos DB SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@azure/cosmos@3.17.3/dist/index.min.js"></script>
+</head>
+<body>
+  <!-- Background particles -->
+  <div id="particles-js"></div>
+  
+  <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="logo">
+        <i class="fas fa-microchip"></i>
+        <span>IoT Dashboard</span>
+      </div>
+      <div class="nav-menu">
+        <a href="index.html" class="nav-item active">
+          <i class="fas fa-home"></i>
+          <span>Trang chủ</span>
+        </a>
+        <a href="data.html" class="nav-item active">
+          <i class="fas fa-database"></i>
+          <span>Dữ liệu</span>
+        </a>
+        <a href="statistics.html" class="nav-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Thống kê</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <i class="fas fa-user-cog"></i>
+          <span>Cài đặt</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="header">
+        <div class="search">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Tìm kiếm...">
         </div>
-        <div class="nav-menu">
-          <a href="index.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Trang chủ</span>
-          </a>
-          <a href="data.html" class="nav-item active">
-            <i class="fas fa-database"></i>
-            <span>Dữ liệu</span>
-          </a>
-          <a href="statistics.html" class="nav-item">
-            <i class="fas fa-chart-line"></i>
-            <span>Thống kê</span>
-          </a>
-          <a href="devices.html" class="nav-item">
-            <i class="fas fa-cogs"></i>
-            <span>Thiết bị</span>
-          </a>
-          <a href="notifications.html" class="nav-item">
-            <i class="fas fa-bell"></i>
-            <span>Thông báo</span>
-          </a>
-          <a href="settings.html" class="nav-item">
-            <i class="fas fa-user-cog"></i>
-            <span>Cài đặt</span>
-          </a>
+        
+        <!-- Đồng hồ -->
+        <div class="real-time-clock">
+          <i class="fas fa-clock"></i>
+          <span id="clock">--:--:--</span>
+          <span id="date">--/--/----</span>
+        </div>
+        
+        <div class="user">
+          <div class="user-avatar">
+            <img src="https://media2.dev.to/dynamic/image/width=320,height=320,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Fuser%2Fprofile_image%2F2893913%2Fcabc423f-3bf8-4043-83a4-d5f1628149c7.jpeg" 
+               alt="User Avatar" 
+               style="width: 50px; height: 50px; border-radius: 50%">
+          </div>
+          <span>Admin</span>
+          <div class="user-dropdown">
+            <button class="dropdown-toggle" aria-label="User menu">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a href="logout.html" class="dropdown-item">
+                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Main Content -->
-      <div class="main-content">
-        <div class="header">
-          <div class="search">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Tìm kiếm..." />
-          </div>
-          <!-- Thêm đồng hồ ở đây -->
-          <div class="real-time-clock">
-            <i class="fas fa-clock"></i>
-            <span id="clock">--:--:--</span>
-            <span id="date">--/--/----</span>
-          </div>
-          <div class="user">
-            <div class="user-avatar">
-              <img
-                src="https://media2.dev.to/dynamic/image/width=320,height=320,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Fuser%2Fprofile_image%2F2893913%2Fcabc423f-3bf8-4043-83a4-d5f1628149c7.jpeg"
-                alt="User Avatar"
-                style="width: 50px; height: 50px; border-radius: 50%"
-              />
-            </div>
-            <span>Admin</span>
-            <div class="user-dropdown">
-              <button class="dropdown-toggle" aria-label="User menu">
-                <i class="fas fa-chevron-down"></i>
-              </button>
-              <div class="dropdown-menu">
-                <a href="logout.html" class="dropdown-item">
-                  <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div class="content-section">
+        <h2 class="section-title">
+          <i class="fas fa-database"></i> Azure Cosmos DB
+        </h2>
 
-        <div class="content-section">
-          <h2 class="section-title">
-            <i class="fas fa-database"></i> Azure Cosmos DB
-          </h2>
+        <div class="cosmos-db-container">
+          <div class="connection-status">
+            <span id="cosmosConnectionStatus">Disconnected</span>
+            <button id="cosmosConnectBtn" class="primary-btn">
+              <i class="fas fa-plug"></i> Connect
+            </button>
+          </div>
 
-          <div class="cosmos-db-container">
-            <div class="connection-status">
-              <span id="cosmosConnectionStatus">Disconnected</span>
-              <button id="cosmosConnectBtn" class="primary-btn">
-                <i class="fas fa-plug"></i> Connect
+          <div class="cosmos-operations" style="display: none">
+            <div class="cosmos-query-container">
+              <h3>Query Data</h3>
+              <select id="cosmosContainerSelect">
+                <option value="">Select a container</option>
+              </select>
+              <textarea id="cosmosQueryInput" 
+                   placeholder="Enter SQL query (e.g. SELECT * FROM c)"></textarea>
+              <button id="executeQueryBtn" class="primary-btn">
+                <i class="fas fa-play"></i> Execute Query
               </button>
             </div>
 
-            <div class="cosmos-operations" style="display: none">
-              <div class="cosmos-query-container">
-                <h3>Query Data</h3>
-                <select id="cosmosContainerSelect">
-                  <option value="">Select a container</option>
-                </select>
-                <textarea
-                  id="cosmosQueryInput"
-                  placeholder="Enter SQL query (e.g. SELECT * FROM c)"
-                ></textarea>
-                <button id="executeQueryBtn" class="primary-btn">
-                  <i class="fas fa-play"></i> Execute Query
-                </button>
-              </div>
-
-              <div class="cosmos-results">
-                <h3>Results</h3>
-                <div id="queryResults" class="query-results">
-                  <div class="empty-results">
-                    <i class="fas fa-database"></i>
-                    <p>No results to display</p>
-                  </div>
+            <div class="cosmos-results">
+              <h3>Results</h3>
+              <div id="queryResults" class="query-results">
+                <div class="empty-results">
+                  <i class="fas fa-database"></i>
+                  <p>No results to display</p>
                 </div>
               </div>
             </div>
@@ -128,10 +115,11 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-    <script src="../assets/js/script.js"></script>
-    <!-- Add the data.js script -->
-    <script src="../assets/js/data.js"></script>
-  </body>
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+  <script src="../assets/js/script.js"></script>
+  <script src="../assets/js/data.js"></script>
+</body>
 </html>

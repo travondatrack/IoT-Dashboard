@@ -151,6 +151,653 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // AQI thresholds and levels
+  const AQI_THRESHOLDS = {
+    GOOD: 50,
+    MODERATE: 100, 
+    UNHEALTHY: 150,
+    HAZARDOUS: 300,
+  };
+
+  // Set initial dates for report
+  function initializeReportDates() {
+    const today = new Date();
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(today.getDate() - 7);
+
+    const reportStartDate = document.getElementById("reportStartDate");
+    const reportEndDate = document.getElementById("reportEndDate");
+
+    if (reportStartDate && reportEndDate) {
+      reportStartDate.valueAsDate = oneWeekAgo;
+      reportEndDate.valueAsDate = today;
+    }
+  }
+
+  // Initialize report dates
+  initializeReportDates();
+
+  // Initialize air quality date filters with default values
+  function initializeAirQualityDateFilters() {
+    const today = new Date();
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(today.getMonth() - 1);
+
+    const airQualityStartDate = document.getElementById("airQualityStartDate");
+    const airQualityEndDate = document.getElementById("airQualityEndDate");
+
+    if (airQualityStartDate && airQualityEndDate) {
+      airQualityStartDate.valueAsDate = oneMonthAgo;
+      airQualityEndDate.valueAsDate = today;
+    }
+  }
+
+  // Initialize air quality date filters
+  initializeAirQualityDateFilters();
+
+  // Create Air Quality Chart
+  const airQualityChartEl = document.getElementById("airQualityChart");
+  let airQualityChart;
+  let airQualityData = []; // Define globally so it's accessible in tooltip callbacks
+
+  if (airQualityChartEl) {
+    airQualityChart = new Chart(airQualityChartEl, {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Chất lượng không khí (AQI)",
+            data: [],
+            borderColor: "rgb(75, 192, 192)",
+            backgroundColor: "rgba(75, 192, 192, 0.2)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 6, // Larger points for better visibility
+            pointHoverRadius: 8,
+            pointBackgroundColor: function (context) {
+              // Color points based on AQI value
+              const value = context.raw;
+              if (value <= AQI_THRESHOLDS.GOOD) {
+                return "rgb(40, 167, 69)"; // Green
+              } else if (value <= AQI_THRESHOLDS.MODERATE) {
+                return "rgb(255, 193, 7)"; // Yellow
+              } else if (value <= AQI_THRESHOLDS.UNHEALTHY) {
+                return "rgb(255, 128, 0)"; // Orange
+              } else {
+                return "rgb(220, 53, 69)"; // Red
+              }
+            },
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              title: function (context) {
+                const dataIndex = context[0].dataIndex;
+                if (airQualityData && airQualityData[dataIndex]) {
+                  const dataPoint = airQualityData[dataIndex];
+                  const localTime = dataPoint.time.toLocaleString([], {
+                    hour12: false,
+                  });
+                  const gmtTime = dataPoint.time.toUTCString();
+                  return [`Thời gian: ${localTime}`, `GMT: ${gmtTime}`];
+                }
+                return "Thời gian không xác định";
+              },
+              label: function (context) {
+                const value = context.raw;
+                let label = `AQI: ${value}`;
+                let description = "";
+
+                if (value <= AQI_THRESHOLDS.GOOD) {
+                  label += " (Tốt)";
+                  description =
+                    "Chất lượng không khí tốt, ít hoặc không có rủi ro.";
+                } else if (value <= AQI_THRESHOLDS.MODERATE) {
+                  label += " (Trung bình)";
+                  description =
+                    "Chất lượng không khí chấp nhận được, nhóm nhạy cảm nên cân nhắc.";
+                } else if (value <= AQI_THRESHOLDS.UNHEALTHY) {
+                  label += " (Không tốt)";
+                  description =
+                    "Không tốt cho sức khỏe, hạn chế hoạt động ngoài trời.";
+                } else {
+                  label += " (Nguy hiểm)";
+                  description =
+                    "Nguy hiểm! Tránh hoạt động ngoài trời và đóng cửa sổ.";
+                }
+
+                return [label, description];
+              },
+              afterLabel: function (context) {
+                const value = context.raw;
+                let recommendations = "";
+
+                if (value <= AQI_THRESHOLDS.GOOD) {
+                  recommendations = "👍 Lý tưởng cho các hoạt động ngoài trời.";
+                } else if (value <= AQI_THRESHOLDS.MODERATE) {
+                  recommendations =
+                    "⚠️ Nhóm nhạy cảm nên giảm hoạt động ngoài trời kéo dài.";
+                } else if (value <= AQI_THRESHOLDS.UNHEALTHY) {
+                  recommendations =
+                    "❗ Mọi người nên rút ngắn thời gian ở ngoài trời.";
+                } else {
+                  recommendations =
+                    "🚫 Tránh hoạt động ngoài trời, đeo khẩu trang nếu ra ngoài.";
+                }
+
+                return recommendations;
+              },
+            },
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            titleFont: {
+              weight: "bold",
+            },
+            padding: 12,
+            boxPadding: 6,
+          },
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            suggestedMax: 200,
+            title: {
+              display: true,
+              text: "Chỉ số AQI",
+            },
+            grid: {
+              color: "rgba(0, 0, 0, 0.05)",
+            },
+          },
+          x: {
+            title: {
+              display: true,
+              text: "Thời gian",
+            },
+            grid: {
+              display: false,
+            },
+          },
+        },
+      },
+    });
+  }
+
+  // Check air quality and show alert
+  function checkAirQuality(airQualityData) {
+    const airQualityAlert = document.getElementById("airQualityAlert");
+    const airQualityMessage = document.getElementById("airQualityMessage");
+
+    if (
+      !airQualityAlert ||
+      !airQualityMessage ||
+      !airQualityData ||
+      airQualityData.length === 0
+    ) {
+      return;
+    }
+
+    // Get the latest air quality value
+    const latestData = airQualityData[airQualityData.length - 1].value;
+
+    if (latestData > AQI_THRESHOLDS.HAZARDOUS) {
+      // Hazardous level
+      airQualityAlert.classList.remove("hidden");
+      airQualityAlert.classList.add("danger");
+      airQualityMessage.textContent = `Chỉ số AQI hiện tại là ${latestData} - MỨC NGUY HIỂM! Cần di tản hoặc hạn chế tiếp xúc.`;
+    } else if (latestData > AQI_THRESHOLDS.UNHEALTHY) {
+      // Unhealthy level
+      airQualityAlert.classList.remove("hidden");
+      airQualityAlert.classList.add("danger");
+      airQualityMessage.textContent = `Chỉ số AQI hiện tại là ${latestData} - Chất lượng không khí XẤU. Nên giảm các hoạt động ngoài trời.`;
+    } else if (latestData > AQI_THRESHOLDS.MODERATE) {
+      // Moderate level
+      airQualityAlert.classList.remove("hidden", "danger");
+      airQualityMessage.textContent = `Chỉ số AQI hiện tại là ${latestData} - Chất lượng không khí TRUNG BÌNH. Nhóm nhạy cảm nên hạn chế hoạt động ngoài trời.`;
+    } else {
+      // Good level
+      airQualityAlert.classList.add("hidden");
+    }
+  }
+
+  // Update air quality chart
+  function updateAirQualityChart(data, filterByDate = false) {
+    if (!airQualityChart || !data || data.length === 0) return;
+
+    // Find air quality data (different possible field names)
+    airQualityData = []; // Clear the global array
+
+    // Get date range if filtering is enabled
+    let startDate, endDate;
+    if (filterByDate) {
+      const airQualityStartDate = document.getElementById(
+        "airQualityStartDate"
+      );
+      const airQualityEndDate = document.getElementById("airQualityEndDate");
+
+      if (
+        airQualityStartDate &&
+        airQualityEndDate &&
+        airQualityStartDate.value &&
+        airQualityEndDate.value
+      ) {
+        startDate = new Date(airQualityStartDate.value);
+        startDate.setHours(0, 0, 0, 0);
+
+        endDate = new Date(airQualityEndDate.value);
+        endDate.setHours(23, 59, 59, 999);
+      }
+    }
+
+    data.forEach((item) => {
+      const timestamp = new Date(
+        item.timestamp || item.date || item.time || item.createdAt
+      );
+      const aqi = item.airQuality || item.aqi || item.AQI || item.air_quality;
+
+      if (aqi !== undefined && timestamp) {
+        // Apply date filter if enabled
+        if (filterByDate && startDate && endDate) {
+          if (timestamp >= startDate && timestamp <= endDate) {
+            airQualityData.push({
+              time: timestamp,
+              value: parseFloat(aqi),
+            });
+          }
+        } else {
+          airQualityData.push({
+            time: timestamp,
+            value: parseFloat(aqi),
+          });
+        }
+      }
+    });
+
+    if (airQualityData.length === 0) {
+      // Show no data message
+      airQualityChart.data.labels = [];
+      airQualityChart.data.datasets[0].data = [];
+      airQualityChart.update();
+      return;
+    }
+
+    // Sort by time
+    airQualityData.sort((a, b) => a.time - b.time);
+
+    // Update chart
+    airQualityChart.data.labels = airQualityData.map((item) => {
+      // Format date
+      const date = item.time.toLocaleDateString();
+
+      // Convert to GMT/UTC time string
+      const time = item.time.toUTCString().split(" ")[4]; // Gets just the time part (HH:MM:SS)
+
+      return `${time} GMT, ${date}`;
+    });
+    airQualityChart.data.datasets[0].data = airQualityData.map(
+      (item) => item.value
+    );
+
+    // Update gradient color based on AQI ranges
+    const ctx = airQualityChart.ctx;
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, "rgba(220, 53, 69, 0.2)"); // Hazardous (top)
+    gradient.addColorStop(0.25, "rgba(255, 128, 0, 0.2)"); // Unhealthy
+    gradient.addColorStop(0.5, "rgba(255, 193, 7, 0.2)"); // Moderate
+    gradient.addColorStop(1, "rgba(40, 167, 69, 0.2)"); // Good (bottom)
+
+    airQualityChart.data.datasets[0].backgroundColor = gradient;
+
+    airQualityChart.update();
+
+    // Check and show alert if needed
+    checkAirQuality(airQualityData);
+  }
+
+  // Optional: Add this function to show original timestamps in a consistent format
+  function formatTimestamp(timestamp) {
+    // Create a date object
+    const date = new Date(timestamp);
+
+    // Format with explicit timezone information
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()} (${getTimezoneOffsetString(date)})`;
+  }
+
+  // Helper function to get timezone offset as a string
+  function getTimezoneOffsetString(date) {
+    const offset = date.getTimezoneOffset();
+    const hours = Math.abs(Math.floor(offset / 60));
+    const minutes = Math.abs(offset % 60);
+    const sign = offset < 0 ? "+" : "-";
+    return `GMT${sign}${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+  }
+
+  // Apply air quality date filter
+  function applyAirQualityDateFilter() {
+    const airQualityStartDate = document.getElementById("airQualityStartDate");
+    const airQualityEndDate = document.getElementById("airQualityEndDate");
+
+    if (!airQualityStartDate || !airQualityEndDate) return;
+
+    // Validate date range
+    if (!airQualityStartDate.value || !airQualityEndDate.value) {
+      alert("Vui lòng chọn khoảng thời gian");
+      return;
+    }
+
+    const startDate = new Date(airQualityStartDate.value);
+    const endDate = new Date(airQualityEndDate.value);
+
+    if (startDate > endDate) {
+      alert("Ngày bắt đầu phải trước ngày kết thúc");
+      return;
+    }
+
+    // Get the data
+    const queryHistory = loadState("queryHistory") || [];
+    let data = [];
+
+    if (queryHistory.length > 0) {
+      // Get the most recent data
+      data = queryHistory[0].results;
+      // Apply the filter
+      updateAirQualityChart(data, true);
+    } else {
+      alert("Không có dữ liệu để hiển thị. Vui lòng tải dữ liệu trước.");
+    }
+  }
+
+  // Generate environmental report
+  function generateEnvironmentalReport() {
+    const reportType = document.getElementById("reportType").value;
+    const startDate = new Date(
+      document.getElementById("reportStartDate").value
+    );
+    const endDate = new Date(document.getElementById("reportEndDate").value);
+
+    // Get the data
+    const queryHistory = loadState("queryHistory") || [];
+    let data = [];
+
+    if (queryHistory.length > 0) {
+      // Get the most recent data
+      data = queryHistory[0].results;
+    } else {
+      alert("Không có dữ liệu để tạo báo cáo. Vui lòng tải dữ liệu trước.");
+      return;
+    }
+
+    // Filter data by date range
+    const filteredData = data.filter((item) => {
+      const itemDate = new Date(
+        item.timestamp || item.date || item.time || item.createdAt
+      );
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+
+    if (filteredData.length === 0) {
+      alert("Không có dữ liệu trong khoảng thời gian đã chọn.");
+      return;
+    }
+
+    // Process data based on report type
+    let processedData;
+
+    switch (reportType) {
+      case "shift":
+        processedData = processShiftData(filteredData);
+        break;
+      case "weekly":
+        processedData = processWeeklyData(filteredData);
+        break;
+      case "daily":
+      default:
+        processedData = processDailyData(filteredData);
+        break;
+    }
+
+    displayEnvironmentalReport(processedData, reportType, startDate, endDate);
+  }
+
+  // Process data for shift-based report
+  function processShiftData(data) {
+    const shifts = {
+      morning: { start: 6, end: 14, label: "Ca sáng (6h-14h)", data: [] },
+      afternoon: { start: 14, end: 22, label: "Ca chiều (14h-22h)", data: [] },
+      night: { start: 22, end: 6, label: "Ca đêm (22h-6h)", data: [] },
+    };
+
+    data.forEach((item) => {
+      const timestamp = new Date(
+        item.timestamp || item.date || item.time || item.createdAt
+      );
+      const hour = timestamp.getHours();
+
+      if (hour >= shifts.morning.start && hour < shifts.morning.end) {
+        shifts.morning.data.push(item);
+      } else if (
+        hour >= shifts.afternoon.start &&
+        hour < shifts.afternoon.end
+      ) {
+        shifts.afternoon.data.push(item);
+      } else {
+        shifts.night.data.push(item);
+      }
+    });
+
+    return Object.values(shifts).map((shift) => {
+      return {
+        label: shift.label,
+        airQuality: calculateAverage(shift.data, "airQuality"),
+        temperature: calculateAverage(shift.data, "temperature"),
+        humidity: calculateAverage(shift.data, "humidity"),
+        samples: shift.data.length,
+      };
+    });
+  }
+
+  // Process data for daily report
+  function processDailyData(data) {
+    const dailyData = {};
+
+    data.forEach((item) => {
+      const timestamp = new Date(
+        item.timestamp || item.date || item.time || item.createdAt
+      );
+      const day = timestamp.toLocaleDateString();
+
+      if (!dailyData[day]) {
+        dailyData[day] = [];
+      }
+
+      dailyData[day].push(item);
+    });
+
+    return Object.keys(dailyData).map((day) => {
+      return {
+        label: day,
+        airQuality: calculateAverage(dailyData[day], "airQuality"),
+        temperature: calculateAverage(dailyData[day], "temperature"),
+        humidity: calculateAverage(dailyData[day], "humidity"),
+        samples: dailyData[day].length,
+      };
+    });
+  }
+
+  // Process data for weekly report
+  function processWeeklyData(data) {
+    const weeklyData = {};
+
+    data.forEach((item) => {
+      const timestamp = new Date(
+        item.timestamp || item.date || item.time || item.createdAt
+      );
+      const weekStart = getWeekStartDate(timestamp);
+      const weekKey = weekStart.toLocaleDateString();
+
+      if (!weeklyData[weekKey]) {
+        weeklyData[weekKey] = [];
+      }
+
+      weeklyData[weekKey].push(item);
+    });
+
+    return Object.keys(weeklyData).map((week) => {
+      const weekStart = new Date(week);
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6);
+
+      return {
+        label: `${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`,
+        airQuality: calculateAverage(weeklyData[week], "airQuality"),
+        temperature: calculateAverage(weeklyData[week], "temperature"),
+        humidity: calculateAverage(weeklyData[week], "humidity"),
+        samples: weeklyData[week].length,
+      };
+    });
+  }
+
+  // Get week start date (Monday)
+  function getWeekStartDate(date) {
+    const dayOfWeek = date.getDay(); // 0 is Sunday, 1 is Monday
+    const diff = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    const monday = new Date(date);
+    monday.setDate(diff);
+    monday.setHours(0, 0, 0, 0);
+    return monday;
+  }
+
+  // Calculate average for a specific field
+  function calculateAverage(items, field) {
+    const fieldNames = {
+      airQuality: ["airQuality", "aqi", "AQI", "air_quality"],
+      temperature: ["temperature", "temp", "Temperature"],
+      humidity: ["humidity", "humid", "Humidity"],
+    };
+
+    const values = items
+      .map((item) => {
+        for (const name of fieldNames[field]) {
+          if (item[name] !== undefined) {
+            return parseFloat(item[name]);
+          }
+        }
+        return null;
+      })
+      .filter((val) => val !== null);
+
+    if (values.length === 0) return null;
+
+    return values.reduce((sum, val) => sum + val, 0) / values.length;
+  }
+
+  // Display environmental report
+  function displayEnvironmentalReport(data, reportType, startDate, endDate) {
+    const reportSummary = document.getElementById("reportSummary");
+    const reportCharts = document.getElementById("reportCharts");
+
+    if (!reportSummary || !reportCharts) return;
+
+    // Create report summary
+    let reportTitle;
+    switch (reportType) {
+      case "shift":
+        reportTitle = "Báo cáo môi trường theo ca";
+        break;
+      case "weekly":
+        reportTitle = "Báo cáo môi trường theo tuần";
+        break;
+      case "daily":
+      default:
+        reportTitle = "Báo cáo môi trường theo ngày";
+        break;
+    }
+
+    reportSummary.innerHTML = `
+      <h3>${reportTitle}</h3>
+      <p>Thời gian: ${startDate.toLocaleDateString()} đến ${endDate.toLocaleDateString()}</p>
+      <p>Tổng số mẫu: ${data.reduce((sum, item) => sum + item.samples, 0)}</p>
+    `;
+
+    // Create charts
+    reportCharts.innerHTML = `
+      <div class="report-chart-container">
+        <canvas id="reportAqiChart"></canvas>
+      </div>
+      <div class="report-chart-container">
+        <canvas id="reportTempHumidityChart"></canvas>
+      </div>
+    `;
+
+    // Create AQI Chart
+    createReportAqiChart(data);
+
+    // Create Temperature/Humidity Chart
+    createReportTempHumidityChart(data);
+  }
+
+  // Create AQI chart for the report
+  function createReportAqiChart(data) {
+    const ctx = document.getElementById("reportAqiChart");
+    if (!ctx) return;
+
+    const labels = data.map((item) => item.label);
+    const aqiData = data.map((item) => item.airQuality);
+
+    // Create the background colors based on AQI values
+    const backgroundColors = aqiData.map((value) => {
+      if (!value) return "rgba(200, 200, 200, 0.5)";
+
+      if (value <= AQI_THRESHOLDS.GOOD) {
+        return "rgba(40, 167, 69, 0.5)";
+      } else if (value <= AQI_THRESHOLDS.MODERATE) {
+        return "rgba(255, 193, 7, 0.5)";
+      } else if (value <= AQI_THRESHOLDS.UNHEALTHY) {
+        return "rgba(255, 128, 0, 0.5)";
+      } else {
+        return "rgba(220, 53, 69, 0.5)";
+      }
+    });
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Chỉ số chất lượng không khí (AQI)",
+            data: aqiData,
+            backgroundColor: backgroundColors,
+            borderColor: backgroundColors.map((color) =>
+              color.replace("0.5", "1")
+            ),
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Chỉ số AQI",
+            },
+          },
+        },
+      },
+    });
+  }
+
   // Toggle comparison chart view
   const comparisonButtons = document.querySelectorAll(".comparison-btn");
   comparisonButtons.forEach((button) => {
@@ -311,6 +958,20 @@ document.addEventListener("DOMContentLoaded", function () {
       )
     ) {
       updateTimeComparisonChart(results);
+    }
+
+    // Update air quality chart if applicable
+    if (
+      results.some(
+        (item) =>
+          item.airQuality !== undefined ||
+          item.aqi !== undefined ||
+          item.AQI !== undefined ||
+          item.air_quality !== undefined
+      )
+    ) {
+      // Call without date filtering initially
+      updateAirQualityChart(results, false);
     }
   }
 
@@ -488,5 +1149,19 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       displayQueryData(currentQueryData);
     }
+  }
+
+  // Add event listener for generate report button
+  const generateReportBtn = document.getElementById("generateReportBtn");
+  if (generateReportBtn) {
+    generateReportBtn.addEventListener("click", generateEnvironmentalReport);
+  }
+
+  // Event listener for air quality date filter button
+  const applyAirQualityDateBtn = document.getElementById(
+    "applyAirQualityDateBtn"
+  );
+  if (applyAirQualityDateBtn) {
+    applyAirQualityDateBtn.addEventListener("click", applyAirQualityDateFilter);
   }
 });

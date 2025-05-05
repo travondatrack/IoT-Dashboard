@@ -575,3 +575,58 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// Azure Image Display functionality
+document.addEventListener("DOMContentLoaded", function () {
+  // Check if we're on the homepage and the image container exists
+  const azureImageDisplay = document.getElementById("azureImageDisplay");
+  if (!azureImageDisplay) return;
+
+  // Azure Blob Storage configuration
+  const connectionString =
+    "BlobEndpoint=https://ppk123.blob.core.windows.net/;QueueEndpoint=https://ppk123.queue.core.windows.net/;FileEndpoint=https://ppk123.file.core.windows.net/;TableEndpoint=https://ppk123.table.core.windows.net/;SharedAccessSignature=sv=2024-11-04&ss=bfqt&srt=co&sp=rwdlacupiytfx&se=2026-04-18T11:55:03Z&st=2025-04-18T03:55:03Z&spr=https,http&sig=JaXRpv25xmAMODiPkMB2UpJQXJ%2BfgRTa9fs3RaKRp5U%3D";
+  const containerName = "test1";
+  const blobName = "photo.jpg";
+
+  // Update container and blob info in the UI
+  document.getElementById("containerInfo").textContent = containerName;
+  document.getElementById("blobInfo").textContent = blobName;
+
+  // Extract the base URL and SAS token from the connection string
+  const blobEndpointMatch = connectionString.match(/BlobEndpoint=([^;]+)/);
+  const sasTokenMatch = connectionString.match(/SharedAccessSignature=([^;]+)/);
+
+  if (!blobEndpointMatch || !sasTokenMatch) {
+    displayError("Invalid connection string format");
+    return;
+  }
+
+  // Build the URL for the blob
+  const blobEndpoint = blobEndpointMatch[1];
+  const sasToken = sasTokenMatch[1];
+  const imageUrl = `${blobEndpoint}${containerName}/${blobName}?${sasToken}`;
+
+  // Create and display the image
+  const img = new Image();
+  img.onload = function () {
+    // Clear loading indicator and append the image
+    azureImageDisplay.innerHTML = "";
+    azureImageDisplay.appendChild(img);
+    img.classList.add("azure-image");
+  };
+
+  img.onerror = function () {
+    displayError("Failed to load image from Azure Blob Storage");
+  };
+
+  img.src = imageUrl;
+
+  function displayError(message) {
+    azureImageDisplay.innerHTML = `
+      <div class="error-display">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>${message}</p>
+      </div>
+    `;
+  }
+});
