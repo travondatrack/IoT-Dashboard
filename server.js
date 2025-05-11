@@ -1,15 +1,15 @@
-// This is your existing server.js code
 const express = require('express');
 const cors = require('cors');
 const { CosmosClient } = require('@azure/cosmos');
+require('dotenv').config(); // Nạp biến từ .env
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const cosmosClient = new CosmosClient({
-  endpoint: "https://ngantruong.documents.azure.com:443/",
-  key: "xUu1OLu8rP0DnYU8BYXAZRxkp03Qg0zVkJ64CAkGV2vFALA2uFYZmLzD5zeBCNtUAlmKbVR7OwRVACDbyWG8Bg=="
+  endpoint: process.env.COSMOS_ENDPOINT,
+  key: process.env.COSMOS_KEY
 });
 
 const databaseId = "ESP32";
