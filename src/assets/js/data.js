@@ -297,42 +297,47 @@ document.addEventListener("DOMContentLoaded", function () {
           `;
         }
 
-        // Add a query history display button and section
-        const historySection = document.createElement("div");
-        historySection.className = "query-history-section";
-        historySection.innerHTML = `
-          <div class="history-header">
-            <h4>Query History</h4>
-            <button id="toggleQueryHistory" class="secondary-btn">
-              <i class="fas fa-history"></i> Show History
-            </button>
-          </div>
-          <div id="queryHistoryList" class="query-history-list" style="display: none;"></div>
-        `;
+        // Kiểm tra xem đã có phần lịch sử truy vấn chưa
+        let historySection = document.querySelector(".query-history-section");
 
-        // Add the history section after query results
-        queryResults.parentNode.insertBefore(
-          historySection,
-          queryResults.nextSibling
-        );
+        // Nếu chưa có, tạo mới
+        if (!historySection) {
+          historySection = document.createElement("div");
+          historySection.className = "query-history-section";
+          historySection.innerHTML = `
+            <div class="history-header">
+              <h4>Query History</h4>
+              <button id="toggleQueryHistory" class="secondary-btn">
+                <i class="fas fa-history"></i> Show History
+              </button>
+            </div>
+            <div id="queryHistoryList" class="query-history-list" style="display: none;"></div>
+          `;
 
-        // Toggle history display
-        document
-          .getElementById("toggleQueryHistory")
-          .addEventListener("click", function () {
-            const historyList = document.getElementById("queryHistoryList");
-            const isHidden = historyList.style.display === "none";
+          // Add the history section after query results
+          queryResults.parentNode.insertBefore(
+            historySection,
+            queryResults.nextSibling
+          );
 
-            this.innerHTML = isHidden
-              ? '<i class="fas fa-times"></i> Hide History'
-              : '<i class="fas fa-history"></i> Show History';
+          // Toggle history display
+          document
+            .getElementById("toggleQueryHistory")
+            .addEventListener("click", function () {
+              const historyList = document.getElementById("queryHistoryList");
+              const isHidden = historyList.style.display === "none";
 
-            historyList.style.display = isHidden ? "block" : "none";
+              this.innerHTML = isHidden
+                ? '<i class="fas fa-times"></i> Hide History'
+                : '<i class="fas fa-history"></i> Show History';
 
-            if (isHidden) {
-              displayQueryHistory();
-            }
-          });
+              historyList.style.display = isHidden ? "block" : "none";
+
+              if (isHidden) {
+                displayQueryHistory();
+              }
+            });
+        }
 
         // Function to display query history
         function displayQueryHistory() {
