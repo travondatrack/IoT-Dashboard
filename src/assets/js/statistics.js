@@ -154,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // AQI thresholds and levels
   const AQI_THRESHOLDS = {
     GOOD: 50,
-    MODERATE: 100, 
+    MODERATE: 100,
     UNHEALTHY: 150,
     HAZARDOUS: 300,
   };
