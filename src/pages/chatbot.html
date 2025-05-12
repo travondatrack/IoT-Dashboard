@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ lý IoT - Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/chatbot.css">
+</head>
+<body>
+    <div class="chatbot-container" id="chatbotContainer">
+      <div class="chatbot-header">
+        <h3><i class="fas fa-robot"></i> Trợ lý IoT</h3>
+        <button class="chatbot-toggle" id="chatbotToggle">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+      <div class="chatbot-body">
+        <div class="chatbot-messages" id="chatbotMessages">
+          <div class="message bot-message">
+            <div class="message-content">
+              Xin chào! Tôi là trợ lý IoT. Bạn có thể hỏi tôi về chất lượng không khí ở bất kỳ địa điểm nào hoặc cách sử dụng dashboard.
+            </div>
+            <div class="message-time">Bây giờ</div>
+          </div>
+        </div>
+        <div class="chatbot-suggestions">
+          <button class="suggestion-btn" data-query="Chất lượng không khí ở Hà Nội?">Chất lượng không khí ở Hà Nội?</button>
+          <button class="suggestion-btn" data-query="Thông tin AQI tại TPHCM">Thông tin AQI tại TPHCM</button>
+          <button class="suggestion-btn" data-query="Hướng dẫn sử dụng dashboard">Hướng dẫn sử dụng dashboard</button>
+        </div>
+      </div>
+      <div class="chatbot-input">
+        <input type="text" id="chatbotInput" placeholder="Nhập câu hỏi của bạn...">
+        <button id="sendMessage">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+
+    <button class="chatbot-launcher" id="chatbotLauncher">
+      <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="../assets/js/chatbot.js"></script>
+</body>
+</html>

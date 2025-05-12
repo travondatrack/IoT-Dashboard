@@ -318,7 +318,6 @@ document.head.insertAdjacentHTML(
 );
 
 // Azure Image Auto Refresh functionality
-// Azure Image Auto Refresh functionality
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize Azure Image Display
   loadAzureImage();
@@ -804,3 +803,5 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }, 9 * 60 * 1000); // 9 minutes
 });
+
+

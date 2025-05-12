@@ -9,6 +9,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <link rel="stylesheet" href="../assets/css/chatbot.css" />
   </head>
 
   <body>
@@ -79,14 +80,14 @@
             </div>
           </div>
         </div>
-        
+
         <!-- Dashboard Content Section -->
         <div class="dashboard-content">
           <div class="section-title">
             <i class="fas fa-image"></i>
             <h2>Azure Storage Images</h2>
           </div>
-          
+
           <div class="azure-image-container">
             <div id="azureImageDisplay" class="image-display">
               <div class="loading-indicator">
@@ -96,17 +97,32 @@
             </div>
             <div class="image-info">
               <p><strong>Source:</strong> Azure Blob Storage</p>
-              <p><strong>Container:</strong> <span id="containerInfo">test1</span></p>
+              <p>
+                <strong>Container:</strong>
+                <span id="containerInfo">test1</span>
+              </p>
               <p><strong>Blob:</strong> <span id="blobInfo">photo.jpg</span></p>
             </div>
             <div class="refresh-status">
-              <p><i class="fas fa-sync fa-spin" style="margin-right: 8px; font-size: 0.8em;"></i> Auto refresh: <span id="refreshTimer">10</span> giây</p>
+              <p>
+                <i
+                  class="fas fa-sync fa-spin"
+                  style="margin-right: 8px; font-size: 0.8em"
+                ></i>
+                Auto refresh: <span id="refreshTimer">10</span> giây
+              </p>
             </div>
           </div>
         </div>
-        
+      </div>
+      <!-- End of Main Content -->
+    </div>
+    <!-- End of container -->
+
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/js/script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
   </body>
 </html>

@@ -1164,4 +1164,498 @@ document.addEventListener("DOMContentLoaded", function () {
   if (applyAirQualityDateBtn) {
     applyAirQualityDateBtn.addEventListener("click", applyAirQualityDateFilter);
   }
+
+  // Xử lý xuất PDF cho bảng dữ liệu
+  const exportDataTablePdf = document.getElementById("exportDataTablePdf");
+  if (exportDataTablePdf) {
+    exportDataTablePdf.addEventListener("click", function () {
+      exportTableToPdf("dataTable", "Bảng dữ liệu IoT");
+    });
+  }
+
+  // Xử lý xuất Excel cho bảng dữ liệu
+  const exportDataTableExcel = document.getElementById("exportDataTableExcel");
+  if (exportDataTableExcel) {
+    exportDataTableExcel.addEventListener("click", function () {
+      exportTableToExcel("dataTable", "DuLieuIoT");
+    });
+  }
+
+  // Xử lý xuất PDF cho biểu đồ chất lượng không khí
+  const exportAirQualityPdf = document.getElementById("exportAirQualityPdf");
+  if (exportAirQualityPdf) {
+    exportAirQualityPdf.addEventListener("click", function () {
+      exportChartToPdf("airQualityChart", "Biểu đồ chất lượng không khí");
+    });
+  }
+
+  // Xử lý xuất ảnh cho biểu đồ chất lượng không khí
+  const exportAirQualityImage = document.getElementById(
+    "exportAirQualityImage"
+  );
+  if (exportAirQualityImage) {
+    exportAirQualityImage.addEventListener("click", function () {
+      exportChartToImage("airQualityChart", "ChartlượngKhôngKhí");
+    });
+  }
+
+  // Xử lý xuất PDF cho báo cáo môi trường
+  const exportReportPdf = document.getElementById("exportReportPdf");
+  if (exportReportPdf) {
+    exportReportPdf.addEventListener("click", function () {
+      exportReportToPdf("reportContainer", "Báo cáo môi trường");
+    });
+  }
+
+  // Xử lý xuất Excel cho báo cáo môi trường
+  const exportReportExcel = document.getElementById("exportReportExcel");
+  if (exportReportExcel) {
+    exportReportExcel.addEventListener("click", function () {
+      exportReportToExcel();
+    });
+  }
+
+  // Hàm xuất bảng dữ liệu sang PDF
+  function exportTableToPdf(tableId, title) {
+    const table = document.getElementById(tableId);
+
+    if (!table) {
+      alert("Không tìm thấy bảng dữ liệu!");
+      return;
+    }
+
+    // Kiểm tra xem bảng có dữ liệu không
+    if (table.innerHTML.includes("Không có dữ liệu để hiển thị")) {
+      alert("Không có dữ liệu để xuất báo cáo!");
+      return;
+    }
+
+    // Chuẩn bị dữ liệu cho PDF
+    let pdfContent = [];
+
+    // Thêm tiêu đề báo cáo
+    pdfContent.push({
+      text: title,
+      fontSize: 18,
+      bold: true,
+      margin: [0, 0, 0, 10],
+    });
+
+    // Thêm thời gian xuất báo cáo
+    pdfContent.push({
+      text: `Thời gian xuất báo cáo: ${new Date().toLocaleString()}`,
+      fontSize: 12,
+      margin: [0, 0, 0, 20],
+    });
+
+    // Xử lý dữ liệu bảng
+    const tableElement = table.querySelector("table");
+    if (tableElement) {
+      // Lấy dữ liệu từ bảng HTML
+      const headers = [];
+      const data = [];
+
+      // Lấy headers
+      const headerRow = tableElement.querySelector("thead tr");
+      if (headerRow) {
+        headerRow.querySelectorAll("th").forEach((th) => {
+          headers.push(th.textContent);
+        });
+      }
+
+      // Lấy dữ liệu từ các hàng
+      tableElement.querySelectorAll("tbody tr").forEach((tr) => {
+        const rowData = [];
+        tr.querySelectorAll("td").forEach((td) => {
+          rowData.push(td.textContent);
+        });
+        data.push(rowData);
+      });
+
+      // Tạo bảng cho PDF
+      if (headers.length > 0 && data.length > 0) {
+        pdfContent.push({
+          table: {
+            headerRows: 1,
+            widths: Array(headers.length).fill("*"),
+            body: [headers, ...data],
+          },
+          layout: {
+            fillColor: function (rowIndex) {
+              return rowIndex === 0
+                ? "#4fc3f7"
+                : rowIndex % 2 === 0
+                ? "#f8f9fa"
+                : null;
+            },
+            hLineWidth: function () {
+              return 1;
+            },
+            vLineWidth: function () {
+              return 1;
+            },
+            hLineColor: function () {
+              return "#e0e0e0";
+            },
+            vLineColor: function () {
+              return "#e0e0e0";
+            },
+          },
+        });
+      }
+    } else {
+      pdfContent.push({
+        text: "Không thể tạo báo cáo: Định dạng bảng không được hỗ trợ.",
+        fontSize: 12,
+        color: "red",
+      });
+    }
+
+    // Tạo PDF
+    const docDefinition = {
+      content: pdfContent,
+      pageSize: "A4",
+      pageOrientation: "landscape",
+      pageMargins: [40, 60, 40, 60],
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Trang ${currentPage.toString()} / ${pageCount}`,
+          alignment: "center",
+          margin: [0, 20, 0, 0],
+        };
+      },
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10],
+        },
+        subheader: {
+          fontSize: 14,
+          bold: true,
+          margin: [0, 10, 0, 5],
+        },
+      },
+    };
+
+    // Tạo và tải xuống PDF
+    pdfMake
+      .createPdf(docDefinition)
+      .download(
+        `${title.replace(/\s+/g, "_")}_${
+          new Date().toISOString().split("T")[0]
+        }.pdf`
+      );
+  }
+
+  // Hàm xuất bảng dữ liệu sang Excel
+  function exportTableToExcel(tableId, fileName) {
+    const table = document.getElementById(tableId);
+
+    if (!table) {
+      alert("Không tìm thấy bảng dữ liệu!");
+      return;
+    }
+
+    // Kiểm tra xem bảng có dữ liệu không
+    if (table.innerHTML.includes("Không có dữ liệu để hiển thị")) {
+      alert("Không có dữ liệu để xuất báo cáo!");
+      return;
+    }
+
+    // Lấy bảng HTML
+    const tableElement = table.querySelector("table");
+    if (!tableElement) {
+      alert("Không tìm thấy bảng để xuất!");
+      return;
+    }
+
+    try {
+      // Tạo workbook mới
+      const wb = XLSX.utils.book_new();
+
+      // Chuyển đổi bảng HTML thành worksheet
+      const ws = XLSX.utils.table_to_sheet(tableElement);
+
+      // Thêm worksheet vào workbook
+      XLSX.utils.book_append_sheet(wb, ws, "DuLieu");
+
+      // Xuất workbook thành file Excel
+      XLSX.writeFile(
+        wb,
+        `${fileName}_${new Date().toISOString().split("T")[0]}.xlsx`
+      );
+    } catch (e) {
+      console.error("Lỗi khi xuất Excel: ", e);
+      alert("Có lỗi khi xuất file Excel. Vui lòng thử lại.");
+    }
+  }
+
+  // Hàm xuất biểu đồ sang PDF
+  function exportChartToPdf(chartId, title) {
+    const chartElement = document.getElementById(chartId);
+
+    if (!chartElement) {
+      alert("Không tìm thấy biểu đồ!");
+      return;
+    }
+
+    // Lấy biểu đồ dưới dạng hình ảnh
+    const chartUrl = chartElement.toDataURL("image/png", 1.0);
+
+    // Chuẩn bị dữ liệu cho PDF
+    const docDefinition = {
+      content: [
+        { text: title, fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+        {
+          text: `Xuất ngày: ${new Date().toLocaleDateString()}`,
+          fontSize: 12,
+          margin: [0, 0, 0, 20],
+        },
+        { image: chartUrl, width: 500, alignment: "center" },
+      ],
+      pageSize: "A4",
+      pageOrientation: "landscape",
+      pageMargins: [40, 60, 40, 60],
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Trang ${currentPage.toString()} / ${pageCount}`,
+          alignment: "center",
+          margin: [0, 20, 0, 0],
+        };
+      },
+    };
+
+    // Tạo và tải xuống PDF
+    pdfMake
+      .createPdf(docDefinition)
+      .download(
+        `${title.replace(/\s+/g, "_")}_${
+          new Date().toISOString().split("T")[0]
+        }.pdf`
+      );
+  }
+
+  // Hàm xuất biểu đồ sang hình ảnh
+  function exportChartToImage(chartId, fileName) {
+    const chartElement = document.getElementById(chartId);
+
+    if (!chartElement) {
+      alert("Không tìm thấy biểu đồ!");
+      return;
+    }
+
+    // Tạo một phần tử a tạm thời để tải xuống
+    const link = document.createElement("a");
+    link.href = chartElement.toDataURL("image/png");
+    link.download = `${fileName}_${new Date().toISOString().split("T")[0]}.png`;
+
+    // Thêm vào DOM, click và xóa
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Hàm xuất báo cáo môi trường sang PDF
+  function exportReportToPdf(reportContainerId, title) {
+    const reportContainer = document.getElementById(reportContainerId);
+
+    if (!reportContainer) {
+      alert("Không tìm thấy báo cáo!");
+      return;
+    }
+
+    // Kiểm tra nếu báo cáo trống
+    if (reportContainer.innerText.trim() === "") {
+      alert("Chưa có báo cáo để xuất. Vui lòng tạo báo cáo trước!");
+      return;
+    }
+
+    // Lấy thông tin tóm tắt
+    const summary = document.getElementById("reportSummary");
+    const summaryText = summary ? summary.innerText : "";
+
+    // Lấy biểu đồ AQI
+    const aqiChart = document.getElementById("reportAqiChart");
+    const aqiChartUrl = aqiChart ? aqiChart.toDataURL("image/png", 1.0) : null;
+
+    // Lấy biểu đồ nhiệt độ/độ ẩm
+    const tempHumidChart = document.getElementById("reportTempHumidityChart");
+    const tempHumidChartUrl = tempHumidChart
+      ? tempHumidChart.toDataURL("image/png", 1.0)
+      : null;
+
+    // Chuẩn bị nội dung PDF
+    const content = [
+      { text: title, fontSize: 18, bold: true, margin: [0, 0, 0, 10] },
+      {
+        text: `Xuất ngày: ${new Date().toLocaleDateString()}`,
+        fontSize: 12,
+        margin: [0, 0, 0, 20],
+      },
+      {
+        text: "Thông tin tổng quan",
+        fontSize: 14,
+        bold: true,
+        margin: [0, 0, 0, 10],
+      },
+      { text: summaryText, fontSize: 12, margin: [0, 0, 0, 20] },
+    ];
+
+    // Thêm biểu đồ nếu có
+    if (aqiChartUrl) {
+      content.push({
+        text: "Biểu đồ chất lượng không khí",
+        fontSize: 14,
+        bold: true,
+        margin: [0, 10, 0, 10],
+      });
+      content.push({
+        image: aqiChartUrl,
+        width: 500,
+        alignment: "center",
+        margin: [0, 0, 0, 20],
+      });
+    }
+
+    if (tempHumidChartUrl) {
+      content.push({
+        text: "Biểu đồ nhiệt độ và độ ẩm",
+        fontSize: 14,
+        bold: true,
+        margin: [0, 10, 0, 10],
+      });
+      content.push({
+        image: tempHumidChartUrl,
+        width: 500,
+        alignment: "center",
+      });
+    }
+
+    // Tạo và tải xuống PDF
+    const docDefinition = {
+      content: content,
+      pageSize: "A4",
+      pageOrientation: "landscape",
+      pageMargins: [40, 60, 40, 60],
+      footer: function (currentPage, pageCount) {
+        return {
+          text: `Trang ${currentPage.toString()} / ${pageCount}`,
+          alignment: "center",
+          margin: [0, 20, 0, 0],
+        };
+      },
+    };
+
+    pdfMake
+      .createPdf(docDefinition)
+      .download(
+        `${title.replace(/\s+/g, "_")}_${
+          new Date().toISOString().split("T")[0]
+        }.pdf`
+      );
+  }
+
+  // Hàm xuất báo cáo môi trường sang Excel
+  function exportReportToExcel() {
+    // Lấy dữ liệu đã xử lý cho báo cáo
+    const reportType = document.getElementById("reportType").value;
+    const startDateElement = document.getElementById("reportStartDate");
+    const endDateElement = document.getElementById("reportEndDate");
+
+    if (
+      !startDateElement ||
+      !endDateElement ||
+      !startDateElement.value ||
+      !endDateElement.value
+    ) {
+      alert("Vui lòng chọn khoảng thời gian cho báo cáo");
+      return;
+    }
+
+    const startDate = new Date(startDateElement.value);
+    const endDate = new Date(endDateElement.value);
+
+    // Lấy dữ liệu hiện tại
+    const queryHistory = loadState("queryHistory") || [];
+    let data = [];
+
+    if (queryHistory.length > 0) {
+      data = queryHistory[0].results;
+    } else {
+      alert("Không có dữ liệu để xuất báo cáo. Vui lòng tải dữ liệu trước.");
+      return;
+    }
+
+    // Lọc dữ liệu theo khoảng thời gian
+    const filteredData = data.filter((item) => {
+      const itemDate = new Date(
+        item.timestamp || item.date || item.time || item.createdAt
+      );
+      return itemDate >= startDate && itemDate <= endDate;
+    });
+
+    if (filteredData.length === 0) {
+      alert("Không có dữ liệu trong khoảng thời gian đã chọn.");
+      return;
+    }
+
+    // Xử lý dữ liệu dựa trên loại báo cáo
+    let processedData;
+    let reportTitle;
+
+    switch (reportType) {
+      case "shift":
+        processedData = processShiftData(filteredData);
+        reportTitle = "Báo cáo theo ca";
+        break;
+      case "weekly":
+        processedData = processWeeklyData(filteredData);
+        reportTitle = "Báo cáo theo tuần";
+        break;
+      case "daily":
+      default:
+        processedData = processDailyData(filteredData);
+        reportTitle = "Báo cáo theo ngày";
+        break;
+    }
+
+    try {
+      // Tạo workbook mới
+      const wb = XLSX.utils.book_new();
+
+      // Tạo một mảng dữ liệu cho worksheet
+      const wsData = [
+        ["Thời gian", "Chỉ số AQI", "Nhiệt độ", "Độ ẩm", "Số mẫu"],
+      ];
+
+      // Thêm dữ liệu vào mảng
+      processedData.forEach((item) => {
+        wsData.push([
+          item.label,
+          item.airQuality !== null ? item.airQuality.toFixed(2) : "N/A",
+          item.temperature !== null ? item.temperature.toFixed(2) : "N/A",
+          item.humidity !== null ? item.humidity.toFixed(2) : "N/A",
+          item.samples,
+        ]);
+      });
+
+      // Tạo worksheet từ mảng dữ liệu
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+      // Thêm worksheet vào workbook
+      XLSX.utils.book_append_sheet(wb, ws, "BaoCao");
+
+      // Tải xuống file Excel
+      XLSX.writeFile(
+        wb,
+        `${reportTitle.replace(/\s+/g, "_")}_${
+          new Date().toISOString().split("T")[0]
+        }.xlsx`
+      );
+    } catch (e) {
+      console.error("Lỗi khi xuất Excel: ", e);
+      alert("Có lỗi khi xuất file Excel. Vui lòng thử lại.");
+    }
+  }
 });

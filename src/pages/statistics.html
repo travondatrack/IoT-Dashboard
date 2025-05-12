@@ -10,6 +10,7 @@
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <link rel="stylesheet" href="../assets/css/statistics.css" />
+    <link rel="stylesheet" href="../assets/css/chatbot.css" />
 
     <!-- Thêm thư viện PDF Make -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
@@ -86,7 +87,17 @@
 
         <!-- Data Source Section -->
         <div class="data-source-section">
-          <div class="widget-title">Nguồn dữ liệu từ Azure Cosmos DB</div>
+          <div class="widget-title">
+            Nguồn dữ liệu từ Azure Cosmos DB
+            <div class="export-buttons">
+              <button class="export-btn" id="exportDataTablePdf">
+                <i class="fas fa-file-pdf"></i> PDF
+              </button>
+              <button class="export-btn" id="exportDataTableExcel">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
+            </div>
+          </div>
           <div class="data-source-content">
             <div class="data-source-header">
               <select id="querySelector" class="query-selector">
@@ -101,7 +112,7 @@
                 <p>Chưa có dữ liệu. Hãy thực hiện truy vấn ở trang Dữ liệu.</p>
               </div>
             </div>
-            
+
             <div class="data-visualization">
               <div id="dataTable" class="data-table-container"></div>
             </div>
@@ -110,7 +121,17 @@
 
         <!-- Air Quality Monitoring Section -->
         <div class="air-quality-section">
-          <div class="widget-title">Giám sát chất lượng không khí</div>
+          <div class="widget-title">
+            Giám sát chất lượng không khí
+            <div class="export-buttons">
+              <button class="export-btn" id="exportAirQualityPdf">
+                <i class="fas fa-file-pdf"></i> PDF
+              </button>
+              <button class="export-btn" id="exportAirQualityImage">
+                <i class="fas fa-image"></i> Ảnh
+              </button>
+            </div>
+          </div>
           <div class="air-quality-content">
             <!-- Air Quality Alert -->
             <div id="airQualityAlert" class="air-quality-alert hidden">
@@ -118,26 +139,36 @@
               <span>Cảnh báo: Chất lượng không khí kém!</span>
               <p id="airQualityMessage">Giá trị AQI vượt ngưỡng cho phép.</p>
             </div>
-            
+
             <!-- Air Quality Chart -->
             <div class="chart-container">
-              <div class="widget-subtitle">Biểu đồ chất lượng không khí theo thời gian</div>
-              
+              <div class="widget-subtitle">
+                Biểu đồ chất lượng không khí theo thời gian
+              </div>
+
               <!-- Add date range selectors -->
               <div class="air-quality-date-filter">
                 <div class="filter-group">
                   <label for="airQualityStartDate">Từ ngày:</label>
-                  <input type="date" id="airQualityStartDate" class="date-picker">
+                  <input
+                    type="date"
+                    id="airQualityStartDate"
+                    class="date-picker"
+                  />
                 </div>
                 <div class="filter-group">
                   <label for="airQualityEndDate">Đến ngày:</label>
-                  <input type="date" id="airQualityEndDate" class="date-picker">
+                  <input
+                    type="date"
+                    id="airQualityEndDate"
+                    class="date-picker"
+                  />
                 </div>
                 <button id="applyAirQualityDateBtn" class="filter-btn">
                   <i class="fas fa-filter"></i> Áp dụng
                 </button>
               </div>
-              
+
               <!-- AQI Legend -->
               <div class="aqi-legend">
                 <div class="aqi-legend-item">
@@ -157,7 +188,7 @@
                   <span>Nguy hiểm (>150)</span>
                 </div>
               </div>
-              
+
               <canvas id="airQualityChart"></canvas>
             </div>
           </div>
@@ -165,7 +196,17 @@
 
         <!-- Environmental Reports Section -->
         <div class="environmental-reports-section">
-          <div class="widget-title">Báo cáo môi trường</div>
+          <div class="widget-title">
+            Báo cáo môi trường
+            <div class="export-buttons">
+              <button class="export-btn" id="exportReportPdf">
+                <i class="fas fa-file-pdf"></i> PDF
+              </button>
+              <button class="export-btn" id="exportReportExcel">
+                <i class="fas fa-file-excel"></i> Excel
+              </button>
+            </div>
+          </div>
           <div class="report-filters">
             <div class="filter-group">
               <label for="reportType">Loại báo cáo:</label>
@@ -177,9 +218,9 @@
             </div>
             <div class="filter-group">
               <label for="reportDateRange">Phạm vi thời gian:</label>
-              <input type="date" id="reportStartDate" class="date-picker">
+              <input type="date" id="reportStartDate" class="date-picker" />
               <span>đến</span>
-              <input type="date" id="reportEndDate" class="date-picker">
+              <input type="date" id="reportEndDate" class="date-picker" />
             </div>
             <button id="generateReportBtn" class="report-btn">
               <i class="fas fa-file-alt"></i> Tạo báo cáo
@@ -190,13 +231,18 @@
             <div id="reportCharts" class="report-charts"></div>
           </div>
         </div>
+      </div>
+      <!-- Add missing closing div for main-content -->
+    </div>
+    <!-- Add missing closing div for container -->
 
     <!-- Scripts -->
     <link rel="stylesheet" href="../assets/css/chatbot.css" />
-    <script src="../assets/js/chatbot.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script src="../assets/js/script.js"></script>
     <script src="../assets/js/statistics.js"></script>
+    <script src="../assets/js/chatbot.js"></script>
+    <!-- Keep only one instance of chatbot.js -->
   </body>
 </html>
